@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,10 @@ case class HeaderCarrier(authorization: Option[Authorization] = None,
                          trueClientPort: Option[String] = None,
                          gaToken: Option[String] = None,
                          gaUserId: Option[String] = None,
-                         deviceID: Option[String] = None) extends  LoggingDetails with HeaderProvider {
+                         deviceID: Option[String] = None,
+                         clientId: Option[ClientId] = None,
+                         clientName: Option[String] = None,
+                         clientToken: Option[String] = None) extends  LoggingDetails with HeaderProvider {
 
   /**
    * @return the time, in nanoseconds, since this header carrier was created
@@ -50,6 +53,9 @@ case class HeaderCarrier(authorization: Option[Authorization] = None,
   lazy val headers: Seq[(String, String)] = {
     List(requestId.map(rid => names.xRequestId -> rid.value),
       sessionId.map(sid => names.xSessionId -> sid.value),
+      clientId.map(names.xClientId -> _.value),
+      clientName.map(names.xClientId -> _),
+      clientToken.map(names.xClientId -> _),
       forwarded.map(f => names.xForwardedFor -> f.value),
       token.map(t => names.token -> t.value),
       Some(names.xRequestChain -> requestChain.value),
@@ -59,7 +65,7 @@ case class HeaderCarrier(authorization: Option[Authorization] = None,
       gaToken.map(HeaderNames.googleAnalyticTokenId ->_),
       gaUserId.map(HeaderNames.googleAnalyticUserId ->_),
       deviceID.map(HeaderNames.deviceID -> _)
-    ).flatten.toList ++ extraHeaders
+    ).flatten ++ extraHeaders
   }
 
   def withExtraHeaders(headers:(String, String)*) : HeaderCarrier = {
@@ -95,7 +101,10 @@ object HeaderCarrier {
       headers.get(HeaderNames.trueClientPort),
       headers.get(HeaderNames.googleAnalyticTokenId),
       headers.get(HeaderNames.googleAnalyticUserId),
-      headers.get(HeaderNames.deviceID)
+      headers.get(HeaderNames.deviceID),
+      headers.get(HeaderNames.xClientId).map(ClientId),
+      headers.get(HeaderNames.xClientName),
+      headers.get(HeaderNames.xClientToken)
     )
   }
 
@@ -114,7 +123,10 @@ object HeaderCarrier {
       headers.get(HeaderNames.trueClientPort),
       headers.get(HeaderNames.googleAnalyticTokenId),
       headers.get(HeaderNames.googleAnalyticUserId),
-      getDeviceId(cookies, headers)
+      getDeviceId(cookies, headers),
+      headers.get(HeaderNames.xClientId).map(ClientId),
+      headers.get(HeaderNames.xClientName),
+      headers.get(HeaderNames.xClientToken)
     )
   }
 

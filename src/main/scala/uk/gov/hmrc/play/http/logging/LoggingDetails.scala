@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ case class SessionId(value: String) extends AnyVal
 
 case class RequestId(value: String) extends AnyVal
 
+case class ClientId(value: String) extends AnyVal
+
 case class RequestChain(value: String) extends AnyVal {
   def extend = RequestChain(s"$value-${RequestChain.newComponent}")
 }
@@ -44,6 +46,8 @@ trait LoggingDetails {
 
   def requestId: Option[RequestId]
 
+  def clientId: Option[ClientId]
+
   def requestChain: RequestChain
 
   def authorization: Option[Authorization]
@@ -56,7 +60,8 @@ trait LoggingDetails {
     (HeaderNames.xRequestId, requestId.map(_.value)),
     (HeaderNames.xSessionId, sessionId.map(_.value)),
     (HeaderNames.authorisation, authorization.map(_.value)),
-    (HeaderNames.xForwardedFor, forwarded.map(_.value)))
+    (HeaderNames.xForwardedFor, forwarded.map(_.value)),
+    (HeaderNames.xClientId, clientId.map(_.value)))
 
   def mdcData: Map[String, String] = for {
     d <- data

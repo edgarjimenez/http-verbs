@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ object HeaderNames {
   import play.api.http.HeaderNames.AUTHORIZATION
 
   val authorisation = AUTHORIZATION
+  val xClientId = "X-Client-ID"
+  val xClientName = "X-Client-Name"
+  val xClientToken = "X-Client-Authorization-Token"
   val xForwardedFor = "x-forwarded-for"
   val xRequestId = "X-Request-ID"
   val xRequestTimestamp = "X-Request-Timestamp"

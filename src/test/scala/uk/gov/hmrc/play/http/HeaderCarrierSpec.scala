@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import play.api.mvc.{Cookie, Action, Controller, Session}
 import play.api.test.{FakeRequest, FakeApplication, FakeHeaders}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier.fromHeadersAndSession
-import uk.gov.hmrc.play.http.logging.{Authorization, ForwardedFor, RequestId, SessionId}
+import uk.gov.hmrc.play.http.logging._
 
 import scala.concurrent.duration._
 
@@ -91,6 +91,10 @@ class HeaderCarrierSpec extends WordSpecLike with Matchers {
 
     "find the requestId from the headers" in {
       fromHeadersAndSession(headers(HeaderNames.xRequestId -> "18476239874162"), Some(Session())).requestId shouldBe Some(RequestId("18476239874162"))
+    }
+
+    "find the clientId from the headers" in {
+      fromHeadersAndSession(headers(HeaderNames.xClientId -> "18476239874162d"), Some(Session())).clientId shouldBe Some(ClientId("18476239874162d"))
     }
 
     "find the sessionId from the session" in {
