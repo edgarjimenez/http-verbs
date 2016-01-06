@@ -97,6 +97,14 @@ class HeaderCarrierSpec extends WordSpecLike with Matchers {
       fromHeadersAndSession(headers(HeaderNames.xClientId -> "18476239874162d"), Some(Session())).clientId shouldBe Some(ClientId("18476239874162d"))
     }
 
+    "find the clientName from the headers" in {
+      fromHeadersAndSession(headers(HeaderNames.xClientName -> "Client Name"), Some(Session())).clientName shouldBe Some("Client Name")
+    }
+
+    "find the clientToken from the headers" in {
+      fromHeadersAndSession(headers(HeaderNames.xClientToken -> "1w39874162dasdf"), Some(Session())).clientToken shouldBe Some("1w39874162dasdf")
+    }
+
     "find the sessionId from the session" in {
       fromHeadersAndSession(headers(), Some(Session(Map(SessionKeys.sessionId -> "sesssionIdFromSession")))).sessionId shouldBe Some(SessionId("sesssionIdFromSession"))
     }
